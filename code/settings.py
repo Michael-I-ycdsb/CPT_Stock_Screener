@@ -1,3 +1,6 @@
+"""
+The general settings for this project
+"""
 import pygame
 
 WINDOW_WIDTH = (16 * 64) * 1.2
