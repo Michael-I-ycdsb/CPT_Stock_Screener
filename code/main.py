@@ -1,13 +1,12 @@
 import pygame
 from settings import *
-from graph import graph
+from graph import Graph
 
 class Main():
     def __init__(self) -> None:
         """
-        Manages the screen and updating the program
+        Manages the screen and updating the program.
         """
-
         pygame.init()
         self.display_surface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT), pygame.RESIZABLE | pygame.SCALED).convert_alpha()
         self.clock = pygame.time.Clock()
@@ -15,9 +14,8 @@ class Main():
 
     def run(self) -> None:
         """
-        Runs the while loop of the code 60 times every second and updates display
+        Runs the while loop of the code 60 times every second and updates display.
         """
-
         while True:
             
             self.app_state.state_manager()
@@ -29,17 +27,16 @@ class Main():
 class AppState():
     def __init__(self) -> None:
         """
-        Manages the current state that needs to run
+        Manages the current state that needs to run.
         """
-
-        self.graph = graph()
+        self.graph = Graph("test")
+        ACTIVE_STATE['active_state'] = 'graph'
 
     def state_manager(self) -> None:
         """
-        Runs which ever state is currently active
+        Runs which ever state is currently active.
         """
-
-        if ACTIVE_STATE['active_state'] == 'sim':
+        if ACTIVE_STATE['active_state'] == 'graph':
             self.graph.run()
 
 if __name__ == '__main__':
