@@ -82,6 +82,11 @@ class AppState():
             
             self.manage_window(event)
             self.update_keys_pressed(event)
+    
+    def draw_assets(self) -> None:
+        """
+        This method is empty and is meant to be overwritten
+        """
 
     def draw(self) -> None:
         """
@@ -89,6 +94,8 @@ class AppState():
         then it draws the zoomed screen depending on how zoomed the screen is.
         """
         self.surface.fill((self.__background_color))
+
+        self.draw_assets()
 
         pygame.draw.circle(self.surface, (250, 0, 0), self.origin, 10)
 
