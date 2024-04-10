@@ -10,7 +10,7 @@ class Main():
         pygame.init()
         self.display_surface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT), pygame.RESIZABLE | pygame.SCALED).convert_alpha()
         self.clock = pygame.time.Clock()
-        self.app_state = AppState()
+        self.app_state = AppStateManager()
 
     def run(self) -> None:
         """
@@ -18,13 +18,13 @@ class Main():
         """
         while True:
             
-            self.app_state.state_manager()
+            self.app_state.run_state()
             
             pygame.display.update()
             self.clock.tick(60)
             #print(self.clock.get_fps())
 
-class AppState():
+class AppStateManager():
     def __init__(self) -> None:
         """
         Manages the current state that needs to run.
@@ -32,7 +32,7 @@ class AppState():
         self.graph = Graph("test")
         ACTIVE_STATE['active_state'] = 'graph'
 
-    def state_manager(self) -> None:
+    def run_state(self) -> None:
         """
         Runs which ever state is currently active.
         """
