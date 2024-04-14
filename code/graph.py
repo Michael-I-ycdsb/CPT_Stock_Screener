@@ -1,4 +1,4 @@
-import pygame, yfinance, sys
+import pygame, yfinance
 from pygame.math import Vector2
 from settings import *
 from support.app_state import AppState
@@ -19,12 +19,12 @@ class Graph(AppState):
         ----------
         stock_name : str
         """
-        super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT, BACKGROUND_COLOR, KEYS_PRESSED)
+        super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT, BACKGROUND_COLOR, KEYS_PRESSED, False)
         self.stock_name = stock_name
     
     def draw_grid_lines(self) -> None:
         """
-        This method draws grid lines onto this class' surface
+        This method draws grid lines onto this class' surface.
         TODO: make the grid lines a set size while zooming to make sure it does not change thickness
         """
         spacing = 15
@@ -41,11 +41,19 @@ class Graph(AppState):
 
             pygame.draw.line(self.surface, (0, 0, 0), line_start_pos, line_end_pos)
 
+    def draw_side_bar(self) -> None:
+        """
+        """
+        rect = pygame.Rect(WINDOW_WIDTH - 100, 0, 100, WINDOW_HEIGHT)
+
+        pygame.draw.rect(self.display_surface, (255, 255, 255), rect)
+
     def draw_assets(self) -> None:
         """
-        This method draws all assets
+        This method draws all assets.
         """
         self.draw_grid_lines()
+        self.draw_side_bar()
 
     def run(self) -> None:
         return super().run()

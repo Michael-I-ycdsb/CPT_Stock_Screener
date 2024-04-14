@@ -7,7 +7,8 @@ class AppState():
             window_width: int,
             window_height: int,
             background_color: tuple[int, int, int],
-            keys_pressed: dict
+            keys_pressed: dict,
+            zoomable: bool = False
     ) -> None:
         """
         Parent Class
@@ -20,14 +21,17 @@ class AppState():
         window_height : int
         background_color : tuple[int, int, int]
         keys_pressed : dict
+        zoomable: bool, default False
         """
         self.__background_color = background_color
         self.__keys_pressed = keys_pressed
+        self.__zoomable = zoomable
 
         self.display_surface = pygame.display.get_surface()
-        self.surface = pygame.Surface((window_width * 3, window_height * 3)).convert_alpha()
+        if self.__zoomable: self.surface = pygame.Surface((window_width * 3, window_height * 3)).convert_alpha()
+        else: self.surface = pygame.Surface((window_width, window_height)).convert_alpha()
         self.origin = Vector2(0, 0)
-        self.zoom = 1
+        if self.__zoomable: self.zoom = 1
     
     def manage_window(self, event) -> None:
         """
@@ -50,11 +54,23 @@ class AppState():
             if event.key == pygame.K_F12:
                 pygame.quit()
                 sys.exit()
+        if self.__zoomable: self.manage_zoom(event)
+
+    def manage_zoom(self, event) -> None:
+        """
+        This method manages when to zoom the application.
+        TODO: make zoom center on the middle of the screen not top left
+
+        Parameters
+        ----------
+        event : Event
+            Paramenter from the pygame method pygame.event.get() in the event loop.
+        """
         if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_MINUS and self.zoom > 0.5:
-                    self.zoom -= 0.1
-                if event.key == pygame.K_EQUALS and self.zoom < 2:
-                    self.zoom += 0.1
+            if event.key == pygame.K_MINUS and self.zoom > 0.5:
+                self.zoom -= 0.1
+            if event.key == pygame.K_EQUALS and self.zoom < 2:
+                self.zoom += 0.1
 
     def update_keys_pressed(self, event) -> None:
         """
@@ -86,6 +102,10 @@ class AppState():
     def draw_assets(self) -> None:
         """
         This method is empty and is meant to be overwritten
+
+        The default implementation of this method does nothing; it's just a
+        convenient "hook" that you can override. This method is called by
+        draw().
         """
 
     def draw(self) -> None:
@@ -99,8 +119,11 @@ class AppState():
 
         pygame.draw.circle(self.surface, (250, 0, 0), self.origin, 10)
 
-        zoomed_screen = pygame.transform.smoothscale_by(self.surface, self.zoom)
-        self.display_surface.blit(zoomed_screen, Vector2(0, 0))
+        if self.__zoomable:
+            zoomed_screen = pygame.transform.smoothscale_by(self.surface, self.zoom)
+            self.display_surface.blit(zoomed_screen, Vector2(0, 0))
+        else:
+            self.display_surface.blit(self.surface, Vector2(0, 0))
 
     def run(self) -> None:
         """
