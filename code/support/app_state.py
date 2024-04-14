@@ -92,7 +92,7 @@ class AppState():
 
     def event_loop(self) -> None:
         """
-        This method manages all events and calls all methods with the event parameter
+        This method manages all events and calls all methods with the event parameter.
         """
         for event in pygame.event.get():
             
@@ -101,7 +101,16 @@ class AppState():
     
     def draw_assets(self) -> None:
         """
-        This method is empty and is meant to be overwritten
+        This method is empty and is meant to be overwritten.
+
+        The default implementation of this method does nothing; it's just a
+        convenient "hook" that you can override. This method is called by
+        draw().
+        """
+
+    def draw_non_zoomable_assets(self):
+        """
+        This method is empty and is meant to be overwritten and only used if AppState is zoomable.
 
         The default implementation of this method does nothing; it's just a
         convenient "hook" that you can override. This method is called by
@@ -122,6 +131,8 @@ class AppState():
         if self.__zoomable:
             zoomed_screen = pygame.transform.smoothscale_by(self.surface, self.zoom)
             self.display_surface.blit(zoomed_screen, Vector2(0, 0))
+
+            self.draw_non_zoomable_assets()
         else:
             self.display_surface.blit(self.surface, Vector2(0, 0))
 

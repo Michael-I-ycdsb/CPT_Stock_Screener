@@ -19,7 +19,7 @@ class Graph(AppState):
         ----------
         stock_name : str
         """
-        super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT, BACKGROUND_COLOR, KEYS_PRESSED, False)
+        super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT, BACKGROUND_COLOR, KEYS_PRESSED, zoomable=True)
         self.stock_name = stock_name
     
     def draw_grid_lines(self) -> None:
@@ -39,22 +39,29 @@ class Graph(AppState):
             line_start_pos = (self.origin.x, line_y_pos)
             line_end_pos = (self.origin.x + self.surface.get_width(), line_y_pos)
 
-            pygame.draw.line(self.surface, (0, 0, 0), line_start_pos, line_end_pos)
+            pygame.draw.line(self.surface, (0, 0, 0), line_start_pos, line_end_pos) 
 
     def draw_side_bar(self) -> None:
         """
+        This method draws the side bar onto the screen.
         """
-        rect = pygame.Rect(WINDOW_WIDTH - 100, 0, 100, WINDOW_HEIGHT)
+        width = 200
+        rect = pygame.Rect(WINDOW_WIDTH - width, 0, width, WINDOW_HEIGHT)
 
-        pygame.draw.rect(self.display_surface, (255, 255, 255), rect)
+        pygame.draw.rect(self.display_surface, (205, 205, 205), rect)
 
     def draw_assets(self) -> None:
         """
         This method draws all assets.
         """
         self.draw_grid_lines()
+    
+    def draw_non_zoomable_assets(self):
+        """
+        This method draws all assets that are always on screen and not zoomable.
+        """
         self.draw_side_bar()
-
+    
     def run(self) -> None:
         return super().run()
 
