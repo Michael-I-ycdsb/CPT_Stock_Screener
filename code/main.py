@@ -22,7 +22,7 @@ class Main():
             
             pygame.display.update()
             self.clock.tick(60)
-            #print(self.clock.get_fps())
+            print(self.clock.get_fps())
 
 class AppStateManager():
     def __init__(self) -> None:
@@ -43,4 +43,4 @@ if __name__ == '__main__':
     main = Main()
     main.run()
     
-    #profile.runctx('main.run()', globals(), locals())
+    #cProfile.runctx('main.run()', globals(), locals())
