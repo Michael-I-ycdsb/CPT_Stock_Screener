@@ -75,6 +75,7 @@ class AppState():
     def manage_pan(self) -> None:
         """
         This method manages when to pan the application and the direction to pan to.
+        # TODO: make cursor drag the screen.
         """
         pan_value = 10
 
@@ -107,7 +108,18 @@ class AppState():
                 if event.key == key:
                     self.__keys_pressed[key] = False
 
-    def event_loop(self) -> None:
+    def event_loop(
+            self,
+            event
+    ) -> None:
+        """
+        This method is empty and is meant to be overwritten.
+
+        The default implementation of this method does nothing; it's just a
+        convenient "hook" that you can override.
+        """
+
+    def __event_loop(self) -> None:
         """
         This method manages all events and calls all methods with the event parameter.
         """
@@ -115,6 +127,8 @@ class AppState():
             
             self.manage_window(event)
             self.update_keys_pressed(event)
+            
+            self.event_loop(event)
     
     def draw_assets(self) -> None:
         """
@@ -159,7 +173,7 @@ class AppState():
         is the only method needed to be called for this class to function.
         """
 
-        self.event_loop()
+        self.__event_loop()
         self.manage_pan()
 
         self.draw()

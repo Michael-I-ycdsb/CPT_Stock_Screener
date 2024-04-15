@@ -21,6 +21,7 @@ class Graph(AppState):
         """
         super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT, BACKGROUND_COLOR, KEYS_PRESSED, zoomable=True)
         self.stock_name = stock_name
+        self.side_bar = None
     
     def draw_grid_lines(self) -> None:
         """
@@ -41,14 +42,18 @@ class Graph(AppState):
 
             pygame.draw.line(self.surface, (0, 0, 0), line_start_pos, line_end_pos) 
 
-    def draw_side_bar(self) -> None:
+    def draw_side_bar(self, event) -> None:
         """
         This method draws the side bar onto the screen.
         """
         width = 200
-        rect = pygame.Rect(WINDOW_WIDTH - width, 0, width, WINDOW_HEIGHT)
 
-        pygame.draw.rect(self.display_surface, (205, 205, 205), rect)
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_TAB:
+                if self.side_bar == None:
+                    self.side_bar = SideBar(Vector2(WINDOW_WIDTH - width, 0), width)
+                else:
+                    self.side_bar = None
 
     def draw_assets(self) -> None:
         """
@@ -60,8 +65,31 @@ class Graph(AppState):
         """
         This method draws all assets that are always on screen and not zoomable.
         """
-        self.draw_side_bar()
+        if not self.side_bar == None:
+            self.side_bar.draw()
+
+            self.display_surface.blit(self.side_bar.surface, (WINDOW_WIDTH - self.side_bar.rect.width, 0))
     
+    def event_loop(self, event) -> None:
+        """
+        """
+        self.draw_side_bar(event)
+        
+
     def run(self) -> None:
+        print(self.side_bar)
         return super().run()
 
+class SideBar():
+    def __init__(
+            self,
+            position: Vector2,
+            width: float
+    ) -> None:
+        """
+        """
+        self.rect = pygame.Rect(position, (width, WINDOW_HEIGHT))
+        self.surface = pygame.Surface(self.rect.size)
+
+    def draw(self) -> None:
+        self.surface.fill((205, 205, 205))
