@@ -13,7 +13,11 @@ ACTIVE_STATE = {'active_state': None}
 TEXT_FONT = 'assets/text/PoetsenOne-Regular.ttf'
 
 KEYS_PRESSED = {
-    pygame.K_F3: False
+    pygame.K_F3: False,
+    pygame.K_UP: False,
+    pygame.K_RIGHT: False,
+    pygame.K_DOWN: False,
+    pygame.K_LEFT: False,
 }
 
 

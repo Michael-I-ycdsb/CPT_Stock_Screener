@@ -72,6 +72,21 @@ class AppState():
             if event.key == pygame.K_EQUALS and self.zoom < 2:
                 self.zoom += 0.1
 
+    def manage_pan(self) -> None:
+        """
+        This method manages when to pan the application and the direction to pan to.
+        """
+        pan_value = 10
+
+        if self.__keys_pressed[pygame.K_UP]:
+            self.origin.y += pan_value
+        if self.__keys_pressed[pygame.K_RIGHT]:
+            self.origin.x += -pan_value
+        if self.__keys_pressed[pygame.K_DOWN]:
+            self.origin.y += -pan_value
+        if self.__keys_pressed[pygame.K_LEFT]:
+            self.origin.x += pan_value
+
     def update_keys_pressed(self, event) -> None:
         """
         This method updates which of the keys in the dict __keys_pressed has
@@ -85,10 +100,12 @@ class AppState():
         if event.type == pygame.KEYDOWN:
             for key in self.__keys_pressed:
                 if event.key == key:
-                    if self.__keys_pressed[key] == True:
-                        self.__keys_pressed[key] = False
-                    else:
-                        self.__keys_pressed[key] = True
+                    self.__keys_pressed[key] = True
+
+        if event.type == pygame.KEYUP:
+            for key in self.__keys_pressed:
+                if event.key == key:
+                    self.__keys_pressed[key] = False
 
     def event_loop(self) -> None:
         """
@@ -143,5 +160,6 @@ class AppState():
         """
 
         self.event_loop()
-            
+        self.manage_pan()
+
         self.draw()
