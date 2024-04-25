@@ -29,7 +29,7 @@ class AppStateManager():
         """
         Manages the current state that needs to run.
         """
-        self.graph = Graph("test")
+        self.graph = Graph("AAPL")
         ACTIVE_STATE['active_state'] = 'graph'
 
     def run_state(self) -> None:

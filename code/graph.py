@@ -28,17 +28,23 @@ class Graph(AppState):
         This method draws grid lines onto this class' surface.
         TODO: make the grid lines a set size while zooming to make sure it does not change thickness
         """
-        spacing = 15
+        spacing = 55
+        origin_multiple = self.origin - Vector2(
+            x = self.origin.x - int(self.origin.x / spacing) * spacing,
+            y = self.origin.y - int(self.origin.y / spacing) * spacing
+        )
 
-        for line_x_pos in range(int(self.origin.x), int(self.surface.get_width() + self.origin.x), spacing):
-            line_start_pos = (line_x_pos, self.origin.y)
-            line_end_pos = (line_x_pos, self.origin.y + self.surface.get_height())
+        relative_origin = self.origin - origin_multiple
+
+        for line_x_pos in range(int(relative_origin.x), int(self.surface.get_width() + relative_origin.x), spacing):
+            line_start_pos = (line_x_pos, 0)
+            line_end_pos = (line_x_pos, relative_origin.y + self.surface.get_height())
 
             pygame.draw.line(self.surface, (0, 0, 0), line_start_pos, line_end_pos)
 
-        for line_y_pos in range(int(self.origin.y), int(self.surface.get_height() + self.origin.y), spacing):
-            line_start_pos = (self.origin.x, line_y_pos)
-            line_end_pos = (self.origin.x + self.surface.get_width(), line_y_pos)
+        for line_y_pos in range(int(relative_origin.y), int(self.surface.get_height() + relative_origin.y), spacing):
+            line_start_pos = (0, line_y_pos)
+            line_end_pos = (relative_origin.x + self.surface.get_width(), line_y_pos)
 
             pygame.draw.line(self.surface, (0, 0, 0), line_start_pos, line_end_pos) 
 
