@@ -10,7 +10,8 @@ TILE_SIZE = 64
 
 ACTIVE_STATE = {'active_state': None}
 
-TEXT_FONT = 'assets/text/PoetsenOne-Regular.ttf'
+FONT_SIZE = 15
+TEXT_FONT = 'assets/text/Arial.ttf'
 
 KEYS_PRESSED = {
     pygame.K_F3: False,
@@ -25,3 +26,4 @@ KEYS_PRESSED = {
 
 BACKGROUND_COLOR = (30, 30, 40)
 GRAPH_LINE_COLOR = (45, 45, 50)
+GRAPH_LINE_NUMBER_COLOR = (100, 100, 100)

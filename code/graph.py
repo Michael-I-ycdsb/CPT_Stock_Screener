@@ -22,6 +22,8 @@ class Graph(AppState):
         super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT, BACKGROUND_COLOR, KEYS_PRESSED, zoomable=True, panable=True)
         self.stock_name = stock_name
         self.side_bar = None
+
+        self.text_font = pygame.font.Font(TEXT_FONT, FONT_SIZE)
     
     def draw_grid_lines(self) -> None:
         """
@@ -42,11 +44,42 @@ class Graph(AppState):
 
             pygame.draw.line(self.surface, GRAPH_LINE_COLOR, line_start_pos, line_end_pos)
 
+            number = -int(self.origin.x / spacing.x) + ((line_x_pos // spacing.x) - (relative_origin.x // spacing.x))
+            self.draw_grid_number(line_y=line_x_pos, number=number)
+
         for line_y_pos in range(int(relative_origin.y), int(self.surface.get_height() + relative_origin.y), int(spacing.y)):
             line_start_pos = (0, line_y_pos)
             line_end_pos = (relative_origin.x + self.surface.get_width(), line_y_pos)
 
-            pygame.draw.line(self.surface, GRAPH_LINE_COLOR, line_start_pos, line_end_pos) 
+            pygame.draw.line(self.surface, GRAPH_LINE_COLOR, line_start_pos, line_end_pos)
+
+            number = -int(self.origin.y / spacing.y) + ((line_y_pos // spacing.y) - (relative_origin.y // spacing.y))
+            self.draw_grid_number(line_x=line_y_pos, number=number)
+
+    def draw_grid_number(
+            self,
+            line_x: float = 0,
+            line_y: float = 0,
+            number: float = 0
+    ) -> None:
+        """
+        Draws a grid number at the given position
+
+        Parameters
+        ----------
+        line_x : float = 0
+            The x position of the line to draw the number on. Only define if the number is on the x lines.
+        line_y : float = 0
+            The y position of the line to draw the number on. Only define if the number is on the y lines.
+        number : float = 0
+            The number that will be drawn.
+        """
+        number_surface = self.text_font.render(str(number), True, GRAPH_LINE_NUMBER_COLOR, BACKGROUND_COLOR)
+        number_rect = number_surface.get_rect()
+        if line_x != 0: number_rect.center = Vector2(WINDOW_WIDTH - number_rect.w, line_x)
+        if line_y != 0: number_rect.center = Vector2(line_y, WINDOW_HEIGHT - number_rect.h)
+
+        self.surface.blit(number_surface, number_rect)
 
     def draw_side_bar(self, event) -> None:
         """
