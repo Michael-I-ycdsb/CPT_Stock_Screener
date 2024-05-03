@@ -79,7 +79,6 @@ class AppState():
     def manage_pan(self, event) -> None:
         """
         This method manages when to pan the application and the direction to pan to.
-        # TODO: make cursor drag the screen.
         """
         pan_value = 10
         mouse_buttons = pygame.mouse.get_pressed()
