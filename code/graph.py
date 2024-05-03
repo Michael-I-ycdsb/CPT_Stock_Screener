@@ -40,13 +40,13 @@ class Graph(AppState):
             line_start_pos = (line_x_pos, 0)
             line_end_pos = (line_x_pos, relative_origin.y + self.surface.get_height())
 
-            pygame.draw.line(self.surface, (0, 0, 0), line_start_pos, line_end_pos)
+            pygame.draw.line(self.surface, GRAPH_LINE_COLOR, line_start_pos, line_end_pos)
 
         for line_y_pos in range(int(relative_origin.y), int(self.surface.get_height() + relative_origin.y), spacing):
             line_start_pos = (0, line_y_pos)
             line_end_pos = (relative_origin.x + self.surface.get_width(), line_y_pos)
 
-            pygame.draw.line(self.surface, (0, 0, 0), line_start_pos, line_end_pos) 
+            pygame.draw.line(self.surface, GRAPH_LINE_COLOR, line_start_pos, line_end_pos) 
 
     def draw_side_bar(self, event) -> None:
         """
