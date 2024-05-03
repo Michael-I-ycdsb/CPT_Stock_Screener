@@ -19,7 +19,7 @@ class Graph(AppState):
         ----------
         stock_name : str
         """
-        super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT, BACKGROUND_COLOR, KEYS_PRESSED, zoomable=True)
+        super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT, BACKGROUND_COLOR, KEYS_PRESSED, zoomable=True, panable=True)
         self.stock_name = stock_name
         self.side_bar = None
     

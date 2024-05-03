@@ -8,7 +8,8 @@ class AppState():
             window_height: int,
             background_color: tuple[int, int, int],
             keys_pressed: dict,
-            zoomable: bool = False
+            zoomable: bool = False,
+            panable: bool = False
     ) -> None:
         """
         Parent Class
@@ -26,12 +27,14 @@ class AppState():
         self.__background_color = background_color
         self.__keys_pressed = keys_pressed
         self.__zoomable = zoomable
+        self.__panable = panable
 
         self.display_surface = pygame.display.get_surface()
         if self.__zoomable: self.surface = pygame.Surface((window_width * 3, window_height * 3)).convert_alpha()
         else: self.surface = pygame.Surface((window_width, window_height)).convert_alpha()
         self.origin = Vector2(0, 0)
         if self.__zoomable: self.zoom = 1
+        if self.__panable: self.pan_active = False
     
     def manage_window(self, event) -> None:
         """
@@ -55,6 +58,7 @@ class AppState():
                 pygame.quit()
                 sys.exit()
         if self.__zoomable: self.manage_zoom(event)
+        self.manage_pan(event)
 
     def manage_zoom(self, event) -> None:
         """
@@ -72,21 +76,35 @@ class AppState():
             if event.key == pygame.K_EQUALS and self.zoom < 2:
                 self.zoom += 0.1
 
-    def manage_pan(self) -> None:
+    def manage_pan(self, event) -> None:
         """
         This method manages when to pan the application and the direction to pan to.
         # TODO: make cursor drag the screen.
         """
         pan_value = 10
+        mouse_buttons = pygame.mouse.get_pressed()
+        mouse_pos = pygame.mouse.get_pos()
 
-        if self.__keys_pressed[pygame.K_UP]:
-            self.origin.y += pan_value
-        if self.__keys_pressed[pygame.K_RIGHT]:
-            self.origin.x += -pan_value
-        if self.__keys_pressed[pygame.K_DOWN]:
-            self.origin.y += -pan_value
-        if self.__keys_pressed[pygame.K_LEFT]:
-            self.origin.x += pan_value
+        if self.__panable:
+            if event.type == pygame.MOUSEBUTTONDOWN and mouse_buttons[0]:
+                self.pan_active = True
+                self.pan_offset_from_mouse = Vector2(mouse_pos) - self.origin
+            if not mouse_buttons[0]:
+                self.pan_active = False
+            
+            if self.pan_active:
+                # sets origin to mouse pos when paning
+                self.origin = Vector2(mouse_pos) - self.pan_offset_from_mouse
+            
+        else:
+            if self.__keys_pressed[pygame.K_UP]:
+                self.origin.y += pan_value
+            if self.__keys_pressed[pygame.K_RIGHT]:
+                self.origin.x += -pan_value
+            if self.__keys_pressed[pygame.K_DOWN]:
+                self.origin.y += -pan_value
+            if self.__keys_pressed[pygame.K_LEFT]:
+                self.origin.x += pan_value
 
     def update_keys_pressed(self, event) -> None:
         """
@@ -174,6 +192,5 @@ class AppState():
         """
 
         self.__event_loop()
-        self.manage_pan()
 
         self.draw()
