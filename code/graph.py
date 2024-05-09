@@ -29,6 +29,12 @@ class Graph(AppState):
         self.graph_count_interval = Vector2(10, 1)
         self.graph_spacing = Vector2(100, 60)
         self.current_datetime = datetime.datetime.now()
+
+        self.period = "1d"
+        self.interval = "5m"
+        self.stock_data = yfinance.download(tickers=self.stock_name, period=self.period, interval=self.interval)
+        self.datetime_stock_data = yfinance.download(tickers=self.stock_name, period=self.period, interval=self.interval)
+        self.datetime_stock_data.reset_index(inplace=True)
     
     def draw_grid_lines(self) -> None:
         """
@@ -104,39 +110,35 @@ class Graph(AppState):
             (time["hour"] - self.current_datetime.hour) * (int(60 / self.graph_count_interval.x) * self.graph_spacing.x) # hour location calculation
             + ((time["minute"]) * (self.graph_spacing.x / self.graph_count_interval.x)) # minute location calculation
         )
-        graph_spacing_multiple = (self.graph_spacing.y / self.graph_count_interval.y)
+        graph_spacing_multiple = Vector2(self.graph_spacing.x / self.graph_count_interval.x, self.graph_spacing.y / self.graph_count_interval.y)
 
         candle_rect = pygame.Rect(0, 0,
-                int(graph_spacing_multiple) - 1,
-                int(graph_spacing_multiple * abs(candle_open - candle_close))
+                int(graph_spacing_multiple.x * (int(self.interval[:-1]))) - 1,
+                int(graph_spacing_multiple.y * abs(candle_open - candle_close))
             )
 
         if candle_open < candle_close:
-            candle_rect.midbottom = self.origin + (x_pos, -candle_open * graph_spacing_multiple)
+            candle_rect.midbottom = self.origin + (x_pos, -candle_open * graph_spacing_multiple.y)
             pygame.draw.rect(
                 self.surface,
                 GRAPH_CANDLE_BULLISH_COLOR,
                 candle_rect
             )
         else:
-            candle_rect.center = self.origin + (x_pos, 100)
+            candle_rect.midtop = self.origin + (x_pos, -candle_open * graph_spacing_multiple.y)
             pygame.draw.rect(
                 self.surface,
                 GRAPH_CANDLE_BEARISH_COLOR,
                 candle_rect
             )
 
-    def create_candles(self, period, interval) -> None:
+    def create_candles(self) -> None:
         """
         """
         candle_datetime_list = []
         
-        print(self.current_datetime.date())
-        stock_data = yfinance.download(tickers=self.stock_name, period=period, interval=interval)
-        datetime_stock_data = yfinance.download(tickers=self.stock_name, period=period, interval=interval)
-        datetime_stock_data.reset_index(inplace=True)
-        for datetime in datetime_stock_data["Datetime"]:
-            candle_data = stock_data.at_time(datetime)
+        for datetime in self.datetime_stock_data["Datetime"]:
+            candle_data = self.stock_data.at_time(datetime)
             print(datetime.hour, candle_data.Open.iloc[0])
             self.draw_candle(candle_data.Open.iloc[0], candle_data.High.iloc[0], candle_data.Low.iloc[0], candle_data.Close.iloc[0], {"hour": datetime.hour, "minute": datetime.minute})
 
@@ -158,7 +160,7 @@ class Graph(AppState):
         This method draws all assets.
         """
         self.draw_grid_lines()
-        self.create_candles(period="1d", interval="5m")
+        self.create_candles()
         #self.draw_candle(5, 25, 0, 20, {"hour": 9, "minute": 25})
     
     def draw_non_zoomable_assets(self):
