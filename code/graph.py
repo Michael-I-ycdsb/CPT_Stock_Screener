@@ -92,8 +92,8 @@ class Graph(AppState):
         """
         number_surface = self.text_font.render(number, True, GRAPH_LINE_NUMBER_COLOR, BACKGROUND_COLOR)
         number_rect = number_surface.get_rect()
-        if line_x != 0: number_rect.center = Vector2(WINDOW_WIDTH - number_rect.w, line_x)
-        if line_y != 0: number_rect.center = Vector2(line_y, WINDOW_HEIGHT - number_rect.h)
+        if line_x != 0: number_rect.center = Vector2(WINDOW_WIDTH / self.zoom - number_rect.w, line_x)
+        if line_y != 0: number_rect.center = Vector2(line_y, WINDOW_HEIGHT / self.zoom - number_rect.h)
 
         self.surface.blit(number_surface, number_rect)
 

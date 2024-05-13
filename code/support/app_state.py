@@ -90,9 +90,10 @@ class AppState():
         mouse_pos = Vector2(pygame.mouse.get_pos()) / self.zoom
 
         if self.__panable:
-            if event.type == pygame.MOUSEBUTTONDOWN and mouse_buttons[0]:
-                self.pan_active = True
-                self.pan_offset_from_mouse = mouse_pos - self.origin
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if mouse_buttons[0]:
+                    self.pan_active = True
+                    self.pan_offset_from_mouse = mouse_pos - self.origin
             if not mouse_buttons[0]:
                 self.pan_active = False
             
