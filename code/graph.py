@@ -26,10 +26,11 @@ class Graph(AppState):
 
         self.text_font = pygame.font.Font(TEXT_FONT, FONT_SIZE)
 
-        self.graph_count_interval = Vector2(10, 1)
+        self.graph_count_interval = Vector2(10, 0.1)
         self.graph_spacing = Vector2(100, 60)
         self.current_datetime = datetime.datetime.now()
 
+        self.origin = Vector2(0, self.graph_spacing.y * 1800)
         self.period = "1d"
         self.interval = "5m"
         self.stock_data = yfinance.download(tickers=self.stock_name, period=self.period, interval=self.interval)
@@ -69,7 +70,7 @@ class Graph(AppState):
             pygame.draw.line(self.surface, GRAPH_LINE_COLOR, line_start_pos, line_end_pos)
 
             scale_num_from_origin = -int(self.origin.y / self.graph_spacing.y) + ((line_y_pos // self.graph_spacing.y) - (relative_origin.y // self.graph_spacing.y))
-            self.draw_grid_number(line_x=line_y_pos, number=str(-scale_num_from_origin * self.graph_count_interval.y))
+            self.draw_grid_number(line_x=line_y_pos, number=str(round(-scale_num_from_origin * self.graph_count_interval.y, 2)))
 
     def draw_grid_number(
             self,
@@ -124,12 +125,24 @@ class Graph(AppState):
                 GRAPH_CANDLE_BULLISH_COLOR,
                 candle_rect
             )
+            pygame.draw.line(
+                self.surface,
+                GRAPH_CANDLE_BULLISH_COLOR,
+                (candle_rect.centerx, abs(candle_low - candle_close) * graph_spacing_multiple.y + candle_rect.top),
+                (candle_rect.centerx, -abs(candle_high - candle_open) * graph_spacing_multiple.y + candle_rect.bottom)
+            )
         else:
             candle_rect.midtop = self.origin + (x_pos, -candle_open * graph_spacing_multiple.y)
             pygame.draw.rect(
                 self.surface,
                 GRAPH_CANDLE_BEARISH_COLOR,
                 candle_rect
+            )
+            pygame.draw.line(
+                self.surface,
+                GRAPH_CANDLE_BEARISH_COLOR,
+                (candle_rect.centerx, abs(candle_low - candle_close) * graph_spacing_multiple.y + candle_rect.top),
+                (candle_rect.centerx, -abs(candle_high - candle_open) * graph_spacing_multiple.y + candle_rect.bottom)
             )
 
     def create_candles(self) -> None:
@@ -139,7 +152,7 @@ class Graph(AppState):
         
         for datetime in self.datetime_stock_data["Datetime"]:
             candle_data = self.stock_data.at_time(datetime)
-            print(datetime.hour, candle_data.Open.iloc[0])
+            #print(datetime.hour, candle_data.Open.iloc[0])
             self.draw_candle(candle_data.Open.iloc[0], candle_data.High.iloc[0], candle_data.Low.iloc[0], candle_data.Close.iloc[0], {"hour": datetime.hour, "minute": datetime.minute})
 
     def draw_side_bar(self, event) -> None:
@@ -179,6 +192,7 @@ class Graph(AppState):
 
 
     def run(self) -> None:
+        print(self.pan_active)
         return super().run()
 
 class SideBar():
