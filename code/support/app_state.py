@@ -70,11 +70,16 @@ class AppState():
         event : Event
             Paramenter from the pygame method pygame.event.get() in the event loop.
         """
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_MINUS and self.zoom > 0.5:
-                self.zoom -= 0.1
-            if event.key == pygame.K_EQUALS and self.zoom < 2:
-                self.zoom += 0.1
+        if event.type == pygame.MOUSEWHEEL:
+            if self.zoom > 0.34 and event.y < 0:
+                self.zoom += event.y / 100
+            if self.zoom < 3 and event.y > 0:
+                self.zoom += event.y / 100
+            print(self.zoom)
+        if self.zoom < 0.34:
+            self.zoom = 0.34
+        elif self.zoom > 3:
+            self.zoom = 3
 
     def manage_pan(self, event) -> None:
         """
