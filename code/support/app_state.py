@@ -24,6 +24,8 @@ class AppState():
         keys_pressed : dict
         zoomable: bool, default False
         """
+        self.__window_width = window_width
+        self.__window_height = window_height
         self.__background_color = background_color
         self.__keys_pressed = keys_pressed
         self.__zoomable = zoomable
@@ -73,9 +75,10 @@ class AppState():
         if event.type == pygame.MOUSEWHEEL:
             if self.zoom > 0.34 and event.y < 0:
                 self.zoom += event.y / 100
+                self.origin -= Vector2((4) / self.zoom, (3) / self.zoom)
             if self.zoom < 3 and event.y > 0:
                 self.zoom += event.y / 100
-            print(self.zoom)
+                self.origin -= Vector2((4) / self.zoom, (3) / self.zoom) # working on it here
         if self.zoom < 0.34:
             self.zoom = 0.34
         elif self.zoom > 3:

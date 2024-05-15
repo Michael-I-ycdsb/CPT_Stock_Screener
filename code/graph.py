@@ -141,8 +141,8 @@ class Graph(AppState):
             pygame.draw.line(
                 self.surface,
                 GRAPH_CANDLE_BEARISH_COLOR,
-                (candle_rect.centerx, abs(candle_low - candle_close) * graph_spacing_multiple.y + candle_rect.top),
-                (candle_rect.centerx, -abs(candle_high - candle_open) * graph_spacing_multiple.y + candle_rect.bottom)
+                (candle_rect.centerx, abs(candle_low - candle_open) * graph_spacing_multiple.y + candle_rect.top),
+                (candle_rect.centerx, -abs(candle_high - candle_close) * graph_spacing_multiple.y + candle_rect.bottom)
             )
 
     def create_candles(self) -> None:
@@ -192,7 +192,7 @@ class Graph(AppState):
 
 
     def run(self) -> None:
-        print(self.pan_active)
+        print(self.stock_data)
         return super().run()
 
 class SideBar():
