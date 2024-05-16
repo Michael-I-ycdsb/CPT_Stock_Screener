@@ -30,12 +30,14 @@ class Graph(AppState):
         self.graph_spacing = Vector2(100, 60)
         self.current_datetime = datetime.datetime.now()
 
-        self.origin = Vector2(0, self.graph_spacing.y * 1800)
+        self.market_duration_time = {"hour": 6, "minute": 690}
         self.period = "1d"
-        self.interval = "5m"
+        self.interval = "1m"
         self.stock_data = yfinance.download(tickers=self.stock_name, period=self.period, interval=self.interval)
         self.datetime_stock_data = yfinance.download(tickers=self.stock_name, period=self.period, interval=self.interval)
         self.datetime_stock_data.reset_index(inplace=True)
+        
+        self.origin = Vector2(0, (self.graph_spacing.y / self.graph_count_interval.y) * self.stock_data.at_time(self.datetime_stock_data["Datetime"][0])["Open"])
     
     def draw_grid_lines(self) -> None:
         """
@@ -57,9 +59,14 @@ class Graph(AppState):
 
             # scale for graph
             scale_num_from_origin = int(-int(self.origin.x / self.graph_spacing.x) + ((line_x_pos // self.graph_spacing.x) - (relative_origin.x // self.graph_spacing.x)))
-            hour = str(self.current_datetime.hour + int((scale_num_from_origin * self.graph_count_interval.x) / 60))
+            
+            day = self.current_datetime.day + int(scale_num_from_origin * self.graph_count_interval.x // 390)
+
+            hour = int((scale_num_from_origin * self.graph_count_interval.x) / 60)
+            market_open_hour_multiple = int(scale_num_from_origin * self.graph_count_interval.x // 390 * 24)
+
             minute = str(int((scale_num_from_origin * self.graph_count_interval.x) % 60)) + "0"
-            scale_num = f"{hour}:{minute[:2]}"
+            scale_num = f"{day}:{hour}:{minute[:2]}" # hour - 6 every 6.5 hour
 
             self.draw_grid_number(line_y=line_x_pos, number=scale_num)
 
